@@ -20,7 +20,7 @@
     <button id="3" class="options"><img src="ball.png" height="50px"></button>
     <button id="4" class="options"><img src="ball.png" height="50px"></button>
 </div>
-
+<h3 id="text"></h3>
 <script src="js/three.js"></script>
 <script src="js/PIElibrary.js"></script>
 <script src="js/DragControls.js"></script>
@@ -98,7 +98,7 @@
     loader.load("lamp.json",function ( obj ) {
         bulb=obj
         bulb.position.set(light_position_x,light_position_y-0.5,light_position_z)
-//        scene.add(bulb)
+        scene.add(bulb)
     });
     loader.load("glasses1.json",function ( obj ) {
         eye_glasses=obj;
@@ -156,21 +156,36 @@
         ball.position.set(object_position_x, object_position_y, object_position_z);
         scene.add(ball);
     });
+    var option_index;
+    function inArray(value, array) {
+        for (var i=0;i<array.length;i++){
+            if (value==array[i])
+                return true;
+        }
+        return false;
+    }
     $('.quiz').click(function () {
         $('.objects_list').hide();
         $('.quiz_options').show();
         var all_objects=[cube,teapot,eye_glasses,ball];
         var all_objects_image=['cube.png','teapot.png','glasses.png','ball.png'];
         var index=getRandomInt(0,all_objects.length-1);
-        var option_index=getRandomInt(1,4);
+        option_index=getRandomInt(1,4);
         var image_index_in_options=[];
         $('#'+option_index.toString()).children('img').attr('src',all_objects_image[index]);
+        image_index_in_options.push(index);
         for(var i=1;i<=4;i++){
             if(i!=option_index){
                 var image_index=getRandomInt(0,all_objects.length-1);
-                while (image_index==index){
+                while (inArray(image_index,image_index_in_options)){
                     image_index=getRandomInt(0,all_objects.length-1);
+                    console.log(image_index_in_options.toString());
+                    console.log(image_index);
                 }
+//                console.log()
+                console.log(image_index_in_options.toString())
+//                console.log(image_index+" d")
+                image_index_in_options.push(image_index);
                 $('#'+i.toString()).children('img').attr('src',all_objects_image[image_index]);
             }
         }
@@ -184,7 +199,18 @@
         object.position.set(object_position_x, object_position_y, 6);
         scene.add(object)
 
-    })
+    });
+    $('.options').click(function () {
+        var option= $(this).attr('id');
+        var option_int=parseInt(option);
+        if (option_int==option_index){
+            console.log("right");
+            $('#text').text("right")
+        }else {
+            console.log("wrong");
+            $('#text').text("wrong")
+        }
+    });
     //    loader.load("coconut-tree.json",function ( obj ) {
 //        scene.add( obj );
 //    });
