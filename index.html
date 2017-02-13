@@ -7,12 +7,20 @@
 	</style>
 </head>
 <body>
+<div class="objects_list">
 <button id="ball">Ball</button>
 <button id="cube">Cube</button>
 <button id="teapot">Teapot</button>
 <button id="eye_glasses">Spectacles</button>
-<button id="light">CFL</button>
+</div>
 <button class="quiz">Play a Quiz</button>
+<div class="quiz_options" style="display: none">Choose Your Option
+    <button id="a" class="options">A</button>
+    <button id="b" class="options">B</button>
+    <button id="c" class="options">C</button>
+    <button id="d" class="options">D</button>
+</div>
+
 <script src="js/three.js"></script>
 <script src="js/PIElibrary.js"></script>
 <script src="js/DragControls.js"></script>
@@ -20,11 +28,14 @@
 <script src="js/jquery.min.js"></script>
 
 <script>
+    function getRandomInt(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
     function create_cube() {
         var geometry_cube = new THREE.BoxGeometry(1, 1, 1);
         var material_cube = new THREE.MeshBasicMaterial({color: 0x00ee00});
         var cube = new THREE.Mesh(geometry_cube, material_cube);
-        cube.position.set(object_position_x, object_position_y, object_position_z);
         cube.castShadow = true;
         cube.receiveShadow = true;
         return cube;
@@ -32,14 +43,13 @@
 
     function create_ball() {
         var myBall;
-        var material_ball = new THREE.MeshBasicMaterial({color: 0xffee00});
+        var material_ball = new THREE.MeshBasicMaterial({color: 0x00eeaa});
         myBall = new THREE.Mesh(new THREE.SphereGeometry(0.6, 32, 32), material_ball);
-        myBall.position.set(object_position_x, object_position_y, object_position_z);
         myBall.castShadow = true;
         myBall.receiveShadow = true;
         return myBall
     }
-
+    var object;
     function create_screen() {
         geometry = new THREE.BoxGeometry(10, 10, 0.5);
         material = new THREE.MeshLambertMaterial({color: 0xd0d0d0});
@@ -61,7 +71,7 @@
 //-----------object properties------------
     object_position_x=0;
     object_position_y=0;
-    object_position_z=1;
+    object_position_z=2;
 
 //-----------objects-----------------------
     var cube;
@@ -73,7 +83,10 @@
 //-----------lights------------------------
     var ambient_light=new THREE.AmbientLight(0xffffff,0.5);
     var light = new THREE.PointLight(0xffffff,1,0,0);
-    light.position.set(0,0,5);
+    light_position_x=0;
+    light_position_y=0.1;
+    light_position_z=5;
+    light.position.set(light_position_x, light_position_y,light_position_z);
     light.castShadow=true;
     light.shadowCameraVisible = true;
 //----------loading objects----------------
@@ -82,11 +95,10 @@
     screen = create_screen();
     loader.load("teapot-claraio.json",function ( obj ) {
         teapot=obj;
-        teapot.position.set(object_position_x,object_position_y,object_position_z);
     });
     loader.load("lamp.json",function ( obj ) {
         bulb=obj
-        bulb.position.set(0,-0.8,5)
+        bulb.position.set(light_position_x,light_position_y-0.5,light_position_z)
         scene.add(bulb)
     });
     loader.load("glasses1.json",function ( obj ) {
@@ -95,23 +107,73 @@
         eye_glasses.scale.y=0.04;
         eye_glasses.scale.z=0.04;
         eye_glasses.rotation.y = -1.1*Math.PI/4;
-        eye_glasses.position.set(object_position_x,object_position_y,object_position_z);
 
     });
+
+//------on Click Listeners-------------------
     $('#teapot').click(function () {
+        camera.position.z=10;
+        light.position.z=light_position_z;
+        bulb.position.z=light_position_z;
+        if(object!=null){
+            scene.remove(object)
+        }
+        object=teapot;
+        teapot.position.set(object_position_x,object_position_y,object_position_z);
         scene.add(teapot);
     });
     $('#eye_glasses').click(function () {
+        camera.position.z=10;
+        light.position.z=light_position_z;
+        bulb.position.z=light_position_z;
+
+        if(object!=null){
+            scene.remove(object)
+        }
+        object=eye_glasses;
+        eye_glasses.position.set(object_position_x,object_position_y,object_position_z);
         scene.add(eye_glasses)
         }
     );
     $('#cube').click(function () {
+        camera.position.z=10;
+        light.position.z=light_position_z;
+        bulb.position.z=light_position_z;
+        if(object!=null){
+            scene.remove(object)
+        }
+        object=cube;
+        cube.position.set(object_position_x, object_position_y, object_position_z);
         scene.add(cube)
     });
     $('#ball').click(function () {
-        scene.add(ball)
-    })
+        camera.position.z=10;
+        light.position.z=light_position_z;
+        bulb.position.z=light_position_z;
+        if(object!=null){
+            scene.remove(object)
+        }
+        object=ball;
+        ball.position.set(object_position_x, object_position_y, object_position_z);
+        scene.add(ball);
+    });
+    $('.quiz').click(function () {
+        $('.objects_list').hide();
+        $('.quiz_options').show();
+        var all_objects=[cube,teapot,eye_glasses,ball];
+        var index=getRandomInt(0,all_objects.length-1);
+        
+        camera.position.z=4.5;
+        light.position.z=10;
+        bulb.position.z=10;
+        if(object!=null){
+            scene.remove(object)
+        }
+        object=all_objects[index]
+        object.position.set(object_position_x, object_position_y, 6);
+        scene.add(object)
 
+    })
     //    loader.load("coconut-tree.json",function ( obj ) {
 //        scene.add( obj );
 //    });
@@ -119,10 +181,9 @@
     scene.add(light);
     scene.add(ambient_light);
     scene.add(screen);
-    scene.add(bulb);
 
     var controls = new THREE.OrbitControls( camera, renderer.domElement );
-    var dragControls = new THREE.DragControls([cube], camera, renderer.domElement );
+    var dragControls = new THREE.DragControls([], camera, renderer.domElement );
     dragControls.addEventListener( 'dragstart', function ( event ) { controls.enabled = false; } );
     dragControls.addEventListener( 'dragend', function ( event ) { controls.enabled = true; } );
 
@@ -203,10 +264,10 @@
 //    }
     var render = function () {
         requestAnimationFrame( render );
-
-        cube.rotation.x += 0.05;
-        cube.rotation.y += 0.05;
-        cube.rotation.z += 0.05;
+//
+//        cube.rotation.x += 0.05;
+//        cube.rotation.y += 0.05;
+//        cube.rotation.z += 0.05;
 
         renderer.render(scene, camera);
     };
