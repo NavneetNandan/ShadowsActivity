@@ -15,10 +15,10 @@
 </div>
 <button class="quiz">Play a Quiz</button>
 <div class="quiz_options" style="display: none">Choose Your Option
-    <button id="a" class="options">A</button>
-    <button id="b" class="options">B</button>
-    <button id="c" class="options">C</button>
-    <button id="d" class="options">D</button>
+    <button id="1" class="options"><img src="ball.png" height="50px"></button>
+    <button id="2" class="options"><img src="ball.png" height="50px"></button>
+    <button id="3" class="options"><img src="ball.png" height="50px"></button>
+    <button id="4" class="options"><img src="ball.png" height="50px"></button>
 </div>
 
 <script src="js/three.js"></script>
@@ -34,7 +34,7 @@
 
     function create_cube() {
         var geometry_cube = new THREE.BoxGeometry(1, 1, 1);
-        var material_cube = new THREE.MeshBasicMaterial({color: 0x00ee00});
+        var material_cube = new THREE.MeshBasicMaterial({color: 0xA52A2A});
         var cube = new THREE.Mesh(geometry_cube, material_cube);
         cube.castShadow = true;
         cube.receiveShadow = true;
@@ -43,17 +43,16 @@
 
     function create_ball() {
         var myBall;
-        var material_ball = new THREE.MeshBasicMaterial({color: 0x00eeaa});
+        var material_ball = new THREE.MeshBasicMaterial({color: 0xff2222});
         myBall = new THREE.Mesh(new THREE.SphereGeometry(0.6, 32, 32), material_ball);
         myBall.castShadow = true;
-        myBall.receiveShadow = true;
         return myBall
     }
     var object;
     function create_screen() {
         geometry = new THREE.BoxGeometry(10, 10, 0.5);
         material = new THREE.MeshLambertMaterial({color: 0xd0d0d0});
-        material.opacity = 1
+        material.opacity = 1;
         myBack = new THREE.Mesh(geometry, material);
         myBack.position.set(0, 0, -2);
         myBack.receiveShadow = true;
@@ -99,7 +98,7 @@
     loader.load("lamp.json",function ( obj ) {
         bulb=obj
         bulb.position.set(light_position_x,light_position_y-0.5,light_position_z)
-        scene.add(bulb)
+//        scene.add(bulb)
     });
     loader.load("glasses1.json",function ( obj ) {
         eye_glasses=obj;
@@ -161,8 +160,20 @@
         $('.objects_list').hide();
         $('.quiz_options').show();
         var all_objects=[cube,teapot,eye_glasses,ball];
+        var all_objects_image=['cube.png','teapot.png','glasses.png','ball.png'];
         var index=getRandomInt(0,all_objects.length-1);
-        
+        var option_index=getRandomInt(1,4);
+        var image_index_in_options=[];
+        $('#'+option_index.toString()).children('img').attr('src',all_objects_image[index]);
+        for(var i=1;i<=4;i++){
+            if(i!=option_index){
+                var image_index=getRandomInt(0,all_objects.length-1);
+                while (image_index==index){
+                    image_index=getRandomInt(0,all_objects.length-1);
+                }
+                $('#'+i.toString()).children('img').attr('src',all_objects_image[image_index]);
+            }
+        }
         camera.position.z=4.5;
         light.position.z=10;
         bulb.position.z=10;
