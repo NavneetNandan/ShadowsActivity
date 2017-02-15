@@ -1,26 +1,66 @@
 <html>
 <head>
-	<title>My first three.js app</title>
-	<style>
-		body { margin: 0; }
-		canvas { width: 100%; height: 100% }
-	</style>
+    <link rel="stylesheet" href="bootstrap.css">
+    <title>My first three.js app</title>
+    <style>
+        body {
+            margin: 0;
+            background: rgba(0,0,0,0.99);
+
+        }
+        .lower_panel{
+            padding: 10px;
+            padding-top: 0px;
+        }
+        .btn{
+            margin-right: 10px;
+        }
+        h2{
+            color: #5bc0de;
+            margin-top: 0;
+        }
+        .side_buttons{
+            margin-right: 30px;
+            float: right;
+        }
+        .objects_list{
+            width: 50%;
+            float: left;
+        }
+        .quiz_options{
+            width: 50%;
+            float: left;
+            color: #1ed36f;
+            font-size: large;
+        }
+        #text{
+            display: inline-flex;
+            margin-left: 20px;
+        }
+    </style>
 </head>
 <body>
-<div class="objects_list">
-<button id="ball">Ball</button>
-<button id="cube">Cube</button>
-<button id="teapot">Teapot</button>
-<button id="eye_glasses">Spectacles</button>
+<div class="threejs_scene"></div>
+<div class="lower_panel">
+    <h2 class="title">Choose an object to show its shadow</h2>
+    <div class="objects_list">
+        <button class="btn" id="ball">Ball</button>
+        <button id="cube" class="btn">Cube</button>
+        <button class="btn" id="teapot">Teapot</button>
+        <button class="btn" id="eye_glasses">Spectacles</button>
+    </div>
+    <div class="side_buttons">    <button class="quiz btn-default btn btn-primary btn-lg ">Play a Quiz</button>
+        <button class="btn-default btn btn-primary btn-lg " id="home" style="display: none">Home</button>
+    </div>
+    <div class="quiz_options" style="display: none">Options
+        <button id="1" class="options btn"><img src="ball.png" height="50px"></button>
+        <button id="2" class="options btn"><img src="ball.png" height="50px"></button>
+        <button id="3" class="options btn"><img src="ball.png" height="50px"></button>
+        <button id="4" class="options btn"><img src="ball.png" height="50px"></button>
+        <div id="text"></div>
+    </div>
+
 </div>
-<button class="quiz">Play a Quiz</button>
-<div class="quiz_options" style="display: none">Choose Your Option
-    <button id="1" class="options"><img src="ball.png" height="50px"></button>
-    <button id="2" class="options"><img src="ball.png" height="50px"></button>
-    <button id="3" class="options"><img src="ball.png" height="50px"></button>
-    <button id="4" class="options"><img src="ball.png" height="50px"></button>
-</div>
-<h3 id="text"></h3>
 <script src="js/three.js"></script>
 <script src="js/PIElibrary.js"></script>
 <script src="js/DragControls.js"></script>
@@ -59,126 +99,133 @@
         return myBack;
     }
     var scene = new THREE.Scene();
-    var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
-    camera.position.x=0;
-    camera.position.y=0;
-    camera.position.z =10;
+    var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.x = -5;
+    camera.position.y = 0;
+    camera.position.z = 9;
     var renderer = new THREE.WebGLRenderer();
     var loader = new THREE.ObjectLoader();
-    renderer.setSize( window.innerWidth, window.innerHeight );
-    document.body.appendChild( renderer.domElement );
-//-----------object properties------------
-    object_position_x=0;
-    object_position_y=0;
-    object_position_z=2;
+    renderer.setSize(window.innerWidth, 0.8*window.innerHeight);
+    $('.threejs_scene').replaceWith(renderer.domElement);
+    var controls = new THREE.OrbitControls(camera, renderer.domElement);
+    //-----------object properties------------
+    object_position_x = 0;
+    object_position_y = 0;
+    object_position_z = 2;
 
-//-----------objects-----------------------
+    //-----------objects-----------------------
     var cube;
     var teapot;
     var eye_glasses;
     var bulb;
     var ball;
     var screen;
-//-----------lights------------------------
-    var ambient_light=new THREE.AmbientLight(0xffffff,0.5);
-    var light = new THREE.PointLight(0xffffff,1,0,0);
-    light_position_x=0;
-    light_position_y=0.1;
-    light_position_z=5;
-    light.position.set(light_position_x, light_position_y,light_position_z);
-    light.castShadow=true;
+    //-----------lights------------------------
+    var ambient_light = new THREE.AmbientLight(0xffffff, 0.5);
+    var light = new THREE.PointLight(0xffffff, 1, 0, 0);
+    light_position_x = 0;
+    light_position_y = 0.1;
+    light_position_z = 5;
+    light.position.set(light_position_x, light_position_y, light_position_z);
+    light.castShadow = true;
     light.shadowCameraVisible = true;
-//----------loading objects----------------
-    cube=create_cube();
+    //----------loading objects----------------
+    cube = create_cube();
     ball = create_ball();
     screen = create_screen();
-    loader.load("teapot-claraio.json",function ( obj ) {
-        teapot=obj;
+    loader.load("teapot-claraio.json", function (obj) {
+        teapot = obj;
     });
-    loader.load("lamp.json",function ( obj ) {
-        bulb=obj
-        bulb.position.set(light_position_x,light_position_y-0.5,light_position_z)
+    loader.load("lamp.json", function (obj) {
+        bulb = obj
+        bulb.position.set(light_position_x, light_position_y - 0.5, light_position_z)
         scene.add(bulb)
     });
-    loader.load("glasses1.json",function ( obj ) {
-        eye_glasses=obj;
-        eye_glasses.scale.x=0.04;
-        eye_glasses.scale.y=0.04;
-        eye_glasses.scale.z=0.04;
-        eye_glasses.rotation.y = -1.1*Math.PI/4;
+    loader.load("glasses1.json", function (obj) {
+        eye_glasses = obj;
+        eye_glasses.scale.x = 0.04;
+        eye_glasses.scale.y = 0.04;
+        eye_glasses.scale.z = 0.04;
+        eye_glasses.rotation.y = -1.1 * Math.PI / 4;
 
     });
 
-//------on Click Listeners-------------------
+    //------on Click Listeners-------------------
     $('#teapot').click(function () {
-        camera.position.z=10;
-        light.position.z=light_position_z;
-        bulb.position.z=light_position_z;
-        if(object!=null){
+        camera.position.z = 10;
+        light.position.z = light_position_z;
+        bulb.position.z = light_position_z;
+        if (object != null) {
             scene.remove(object)
         }
-        object=teapot;
-        teapot.position.set(object_position_x,object_position_y,object_position_z);
+        object = teapot;
+        teapot.position.set(object_position_x, object_position_y, object_position_z);
         scene.add(teapot);
     });
     $('#eye_glasses').click(function () {
-        camera.position.z=10;
-        light.position.z=light_position_z;
-        bulb.position.z=light_position_z;
+            camera.position.z = 10;
+            light.position.z = light_position_z;
+            bulb.position.z = light_position_z;
 
-        if(object!=null){
-            scene.remove(object)
-        }
-        object=eye_glasses;
-        eye_glasses.position.set(object_position_x,object_position_y,object_position_z);
-        scene.add(eye_glasses)
+            if (object != null) {
+                scene.remove(object)
+            }
+            object = eye_glasses;
+            eye_glasses.position.set(object_position_x, object_position_y, object_position_z);
+            scene.add(eye_glasses)
         }
     );
     $('#cube').click(function () {
-        camera.position.z=10;
-        light.position.z=light_position_z;
-        bulb.position.z=light_position_z;
-        if(object!=null){
+        camera.position.z = 10;
+        light.position.z = light_position_z;
+        bulb.position.z = light_position_z;
+        if (object != null) {
             scene.remove(object)
         }
-        object=cube;
+        object = cube;
         cube.position.set(object_position_x, object_position_y, object_position_z);
         scene.add(cube)
     });
     $('#ball').click(function () {
-        camera.position.z=10;
-        light.position.z=light_position_z;
-        bulb.position.z=light_position_z;
-        if(object!=null){
+        camera.position.z = 10;
+        light.position.z = light_position_z;
+        bulb.position.z = light_position_z;
+        if (object != null) {
             scene.remove(object)
         }
-        object=ball;
+        object = ball;
         ball.position.set(object_position_x, object_position_y, object_position_z);
         scene.add(ball);
     });
     var option_index;
     function inArray(value, array) {
-        for (var i=0;i<array.length;i++){
-            if (value==array[i])
+        for (var i = 0; i < array.length; i++) {
+            if (value == array[i])
                 return true;
         }
         return false;
     }
     $('.quiz').click(function () {
+        controls.reset();
+        controls.dispose();
+        $('#text').text("")
         $('.objects_list').hide();
+        $('.quiz').text("Play New Quiz")
+        $('.title').text("Choose the correct object whose shadow is displayed on screen");
         $('.quiz_options').show();
-        var all_objects=[cube,teapot,eye_glasses,ball];
-        var all_objects_image=['cube.png','teapot.png','glasses.png','ball.png'];
-        var index=getRandomInt(0,all_objects.length-1);
-        option_index=getRandomInt(1,4);
-        var image_index_in_options=[];
-        $('#'+option_index.toString()).children('img').attr('src',all_objects_image[index]);
+        $('#home').show();
+        var all_objects = [cube, teapot, eye_glasses, ball];
+        var all_objects_image = ['cube.png', 'teapot.png', 'glasses.png', 'ball.png'];
+        var index = getRandomInt(0, all_objects.length - 1);
+        option_index = getRandomInt(1, 4);
+        var image_index_in_options = [];
+        $('#' + option_index.toString()).children('img').attr('src', all_objects_image[index]);
         image_index_in_options.push(index);
-        for(var i=1;i<=4;i++){
-            if(i!=option_index){
-                var image_index=getRandomInt(0,all_objects.length-1);
-                while (inArray(image_index,image_index_in_options)){
-                    image_index=getRandomInt(0,all_objects.length-1);
+        for (var i = 1; i <= 4; i++) {
+            if (i != option_index) {
+                var image_index = getRandomInt(0, all_objects.length - 1);
+                while (inArray(image_index, image_index_in_options)) {
+                    image_index = getRandomInt(0, all_objects.length - 1);
                     console.log(image_index_in_options.toString());
                     console.log(image_index);
                 }
@@ -186,121 +233,121 @@
                 console.log(image_index_in_options.toString())
 //                console.log(image_index+" d")
                 image_index_in_options.push(image_index);
-                $('#'+i.toString()).children('img').attr('src',all_objects_image[image_index]);
+                $('#' + i.toString()).children('img').attr('src', all_objects_image[image_index]);
             }
         }
-        camera.position.z=4.5;
-        light.position.z=10;
-        bulb.position.z=10;
-        if(object!=null){
+        camera.position.z = 4.5;
+        light.position.z = 10;
+        bulb.position.z = 10;
+        if (object != null) {
             scene.remove(object)
         }
-        object=all_objects[index]
+        object = all_objects[index]
         object.position.set(object_position_x, object_position_y, 6);
         scene.add(object)
 
     });
     $('.options').click(function () {
-        var option= $(this).attr('id');
-        var option_int=parseInt(option);
-        if (option_int==option_index){
+        var option = $(this).attr('id');
+        var option_int = parseInt(option);
+        if (option_int == option_index) {
             console.log("right");
-            $('#text').text("right")
-        }else {
+            $('#text').text("Your answer is correct")
+        } else {
             console.log("wrong");
-            $('#text').text("wrong")
+            $('#text').text("Your answer is wrong")
         }
     });
+    $('#home').click(function () {
+        window.location.reload();
+    })
     //    loader.load("coconut-tree.json",function ( obj ) {
-//        scene.add( obj );
-//    });
-//--------create-scene----------------
+    //        scene.add( obj );
+    //    });
+    //--------create-scene----------------
     scene.add(light);
     scene.add(ambient_light);
     scene.add(screen);
 
-    var controls = new THREE.OrbitControls( camera, renderer.domElement );
-    var dragControls = new THREE.DragControls([], camera, renderer.domElement );
-    dragControls.addEventListener( 'dragstart', function ( event ) { controls.enabled = false; } );
-    dragControls.addEventListener( 'dragend', function ( event ) { controls.enabled = true; } );
-
+//        var dragControls = new THREE.DragControls([], camera, renderer.domElement );
+//        dragControls.addEventListener( 'dragstart', function ( event ) { controls.enabled = false; } );
+    //    dragControls.addEventListener( 'dragend', function ( event ) { controls.enabled = true; } );
 
 
     //    scene.add(myBall)
-//    PIEaddElement(myBack);
-//    loader = new THREE.TextureLoader();
-//    texture = loader.load( 'hardwood2_diffuse.jpg' );
-//    texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-//    texture.repeat.set( 25, 25 );
-//    texture.anisotropy = 16;
-//    bottomB=-4
-//    material = new THREE.MeshPhongMaterial( { color: 0xffffff, specular: 0x111111, map: texture } );
-//    geometry = new THREE.PlaneBufferGeometry( mySceneW * 2, backB * 2 );
-//    geometry = new THREE.BoxGeometry( mySceneW * 2, wallThickness, 100);
-//    material = new THREE.MeshLambertMaterial( {color: 0xaaaaaa} );
-//    myFloor  = new THREE.Mesh( geometry, material );
-//    // myFloor.lookAt(new THREE.Vector3(0,1,0));
-//    myFloor.position.set(myCenterX, bottomB - (wallThickness / 2), 0.0);
-//    myFloor.receiveShadow = true;
-//    scene.add(myFloor);
+    //    PIEaddElement(myBack);
+    //    loader = new THREE.TextureLoader();
+    //    texture = loader.load( 'hardwood2_diffuse.jpg' );
+    //    texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+    //    texture.repeat.set( 25, 25 );
+    //    texture.anisotropy = 16;
+    //    bottomB=-4
+    //    material = new THREE.MeshPhongMaterial( { color: 0xffffff, specular: 0x111111, map: texture } );
+    //    geometry = new THREE.PlaneBufferGeometry( mySceneW * 2, backB * 2 );
+    //    geometry = new THREE.BoxGeometry( mySceneW * 2, wallThickness, 100);
+    //    material = new THREE.MeshLambertMaterial( {color: 0xaaaaaa} );
+    //    myFloor  = new THREE.Mesh( geometry, material );
+    //    // myFloor.lookAt(new THREE.Vector3(0,1,0));
+    //    myFloor.position.set(myCenterX, bottomB - (wallThickness / 2), 0.0);
+    //    myFloor.receiveShadow = true;
+    //    scene.add(myFloor);
 
-//    var textureFlare0 = THREE.ImageUtils.loadTexture("lensflare.png");
-//    var textureFlare3 = THREE.ImageUtils.loadTexture("lensflare3.png");
-//
-//    var flareColor = new THREE.Color(0xffffff);
-//    var lensFlare = new THREE.LensFlare( {size:50, distance:0.0, blending:THREE.AdditiveBlending, color:flareColor});
+    //    var textureFlare0 = THREE.ImageUtils.loadTexture("lensflare.png");
+    //    var textureFlare3 = THREE.ImageUtils.loadTexture("lensflare3.png");
+    //
+    //    var flareColor = new THREE.Color(0xffffff);
+    //    var lensFlare = new THREE.LensFlare( {size:50, distance:0.0, blending:THREE.AdditiveBlending, color:flareColor});
     //lensFlare.add(textureFlare3, 60, 0.6, THREE.AdditiveBlending);
-//    lensFlare.add(textureFlare3, 70, 0.7, THREE.AdditiveBlending);
-//    lensFlare.add(textureFlare3, 120, 0.9, THREE.AdditiveBlending);
-//    lensFlare.add(textureFlare3, 70, 1.0, THREE.AdditiveBlending);
+    //    lensFlare.add(textureFlare3, 70, 0.7, THREE.AdditiveBlending);
+    //    lensFlare.add(textureFlare3, 120, 0.9, THREE.AdditiveBlending);
+    //    lensFlare.add(textureFlare3, 70, 1.0, THREE.AdditiveBlending);
 
-//    lensFlare.position.copy(light.position);
-//    scene.add(lensFlare);
+    //    lensFlare.position.copy(light.position);
+    //    scene.add(lensFlare);
 
 
+    //
+    //
+    //    var textureFlare0 = THREE.ImageUtils.loadTexture( "lensflare.png" );
+    //    var textureFlare2 = THREE.ImageUtils.loadTexture( "lensflare2.png" );
+    //    var textureFlare3 = THREE.ImageUtils.loadTexture( "lensflare3.png" );
+    //    addLight( 0.55, 0.9, 0.5, 0, 0, 1000 );
+    //    function addLight( h, s, l, x, y, z ) {
+    //        var light = new THREE.PointLight( 0xffffff, 1.5, 2000 );
+    //        light.color.setHSL( h, s, l );
+    //        light.position.set( x, y, z );
+    //        scene.add( light );
+    //        var flareColor = new THREE.Color( 0xffffff );
+    //        flareColor.setHSL( h, s, l + 0.5 );
+    //        var lensFlare = new THREE.LensFlare( textureFlare0, 700, 0.0, THREE.AdditiveBlending, flareColor );
+    //        lensFlare.add( textureFlare2, 512, 0.0, THREE.AdditiveBlending );
+    ////        lensFlare.add( textureFlare2, 512, 0.0, THREE.AdditiveBlending );
+    ////        lensFlare.add( textureFlare2, 512, 0.0, THREE.AdditiveBlending );
+    ////        lensFlare.add( textureFlare3, 60, 0.6, THREE.AdditiveBlending );
+    ////        lensFlare.add( textureFlare3, 70, 0.7, THREE.AdditiveBlending );
+    //        lensFlare.add( textureFlare3, 120, 0.9, THREE.AdditiveBlending );
+    //        lensFlare.add( textureFlare3, 70, 1.0, THREE.AdditiveBlending );
+    //        lensFlare.customUpdateCallback = lensFlareUpdateCallback;
+    //        lensFlare.position.copy( light.position );
+    //        scene.add( lensFlare );
+    //    }
 
-//
-//
-//    var textureFlare0 = THREE.ImageUtils.loadTexture( "lensflare.png" );
-//    var textureFlare2 = THREE.ImageUtils.loadTexture( "lensflare2.png" );
-//    var textureFlare3 = THREE.ImageUtils.loadTexture( "lensflare3.png" );
-//    addLight( 0.55, 0.9, 0.5, 0, 0, 1000 );
-//    function addLight( h, s, l, x, y, z ) {
-//        var light = new THREE.PointLight( 0xffffff, 1.5, 2000 );
-//        light.color.setHSL( h, s, l );
-//        light.position.set( x, y, z );
-//        scene.add( light );
-//        var flareColor = new THREE.Color( 0xffffff );
-//        flareColor.setHSL( h, s, l + 0.5 );
-//        var lensFlare = new THREE.LensFlare( textureFlare0, 700, 0.0, THREE.AdditiveBlending, flareColor );
-//        lensFlare.add( textureFlare2, 512, 0.0, THREE.AdditiveBlending );
-////        lensFlare.add( textureFlare2, 512, 0.0, THREE.AdditiveBlending );
-////        lensFlare.add( textureFlare2, 512, 0.0, THREE.AdditiveBlending );
-////        lensFlare.add( textureFlare3, 60, 0.6, THREE.AdditiveBlending );
-////        lensFlare.add( textureFlare3, 70, 0.7, THREE.AdditiveBlending );
-//        lensFlare.add( textureFlare3, 120, 0.9, THREE.AdditiveBlending );
-//        lensFlare.add( textureFlare3, 70, 1.0, THREE.AdditiveBlending );
-//        lensFlare.customUpdateCallback = lensFlareUpdateCallback;
-//        lensFlare.position.copy( light.position );
-//        scene.add( lensFlare );
-//    }
-
-//    function lensFlareUpdateCallback( object ) {
-//        var f, fl = object.lensFlares.length;
-//        var flare;
-//        var vecX = -object.positionScreen.x * 2;
-//        var vecY = -object.positionScreen.y * 2;
-//        for( f = 0; f < fl; f++ ) {
-//            flare = object.lensFlares[ f ];
-//            flare.x = object.positionScreen.x + vecX * flare.distance;
-//            flare.y = object.positionScreen.y + vecY * flare.distance;
-//            flare.rotation = 0;
-//        }
-//        object.lensFlares[ 2 ].y += 0.025;
-//        object.lensFlares[ 3 ].rotation = object.positionScreen.x * 0.5 + THREE.Math.degToRad( 45 );
-//    }
+    //    function lensFlareUpdateCallback( object ) {
+    //        var f, fl = object.lensFlares.length;
+    //        var flare;
+    //        var vecX = -object.positionScreen.x * 2;
+    //        var vecY = -object.positionScreen.y * 2;
+    //        for( f = 0; f < fl; f++ ) {
+    //            flare = object.lensFlares[ f ];
+    //            flare.x = object.positionScreen.x + vecX * flare.distance;
+    //            flare.y = object.positionScreen.y + vecY * flare.distance;
+    //            flare.rotation = 0;
+    //        }
+    //        object.lensFlares[ 2 ].y += 0.025;
+    //        object.lensFlares[ 3 ].rotation = object.positionScreen.x * 0.5 + THREE.Math.degToRad( 45 );
+    //    }
     var render = function () {
-        requestAnimationFrame( render );
+        requestAnimationFrame(render);
 //
 //        cube.rotation.x += 0.05;
 //        cube.rotation.y += 0.05;
