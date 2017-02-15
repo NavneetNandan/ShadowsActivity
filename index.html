@@ -1,3 +1,4 @@
+<!--suppress JSValidateTypes -->
 <html>
 <head>
     <link rel="stylesheet" href="bootstrap.css">
@@ -9,8 +10,7 @@
 
         }
         .lower_panel{
-            padding: 10px;
-            padding-top: 0px;
+            padding: 0 10px 10px;
         }
         .btn{
             margin-right: 10px;
@@ -53,10 +53,10 @@
         <button class="btn-default btn btn-primary btn-lg " id="home" style="display: none">Home</button>
     </div>
     <div class="quiz_options" style="display: none">Options
-        <button id="1" class="options btn"><img src="ball.png" height="50px"></button>
-        <button id="2" class="options btn"><img src="ball.png" height="50px"></button>
-        <button id="3" class="options btn"><img src="ball.png" height="50px"></button>
-        <button id="4" class="options btn"><img src="ball.png" height="50px"></button>
+        <button id="1" class="options btn"><img height="50px"></button>
+        <button id="2" class="options btn"><img height="50px"></button>
+        <button id="3" class="options btn"><img height="50px"></button>
+        <button id="4" class="options btn"><img height="50px"></button>
         <div id="text"></div>
     </div>
 
@@ -137,8 +137,8 @@
         teapot = obj;
     });
     loader.load("lamp.json", function (obj) {
-        bulb = obj
-        bulb.position.set(light_position_x, light_position_y - 0.5, light_position_z)
+        bulb = obj;
+        bulb.position.set(light_position_x, light_position_y - 0.5, light_position_z);
         scene.add(bulb)
     });
     loader.load("glasses1.json", function (obj) {
@@ -208,9 +208,9 @@
     $('.quiz').click(function () {
         controls.reset();
         controls.dispose();
-        $('#text').text("")
+        $('#text').text("");
         $('.objects_list').hide();
-        $('.quiz').text("Play New Quiz")
+        $('.quiz').text("Play New Quiz");
         $('.title').text("Choose the correct object whose shadow is displayed on screen");
         $('.quiz_options').show();
         $('#home').show();
@@ -226,12 +226,7 @@
                 var image_index = getRandomInt(0, all_objects.length - 1);
                 while (inArray(image_index, image_index_in_options)) {
                     image_index = getRandomInt(0, all_objects.length - 1);
-                    console.log(image_index_in_options.toString());
-                    console.log(image_index);
                 }
-//                console.log()
-                console.log(image_index_in_options.toString())
-//                console.log(image_index+" d")
                 image_index_in_options.push(image_index);
                 $('#' + i.toString()).children('img').attr('src', all_objects_image[image_index]);
             }
@@ -242,7 +237,7 @@
         if (object != null) {
             scene.remove(object)
         }
-        object = all_objects[index]
+        object = all_objects[index];
         object.position.set(object_position_x, object_position_y, 6);
         scene.add(object)
 
@@ -260,98 +255,14 @@
     });
     $('#home').click(function () {
         window.location.reload();
-    })
-    //    loader.load("coconut-tree.json",function ( obj ) {
-    //        scene.add( obj );
-    //    });
+    });
     //--------create-scene----------------
+
     scene.add(light);
     scene.add(ambient_light);
     scene.add(screen);
-
-//        var dragControls = new THREE.DragControls([], camera, renderer.domElement );
-//        dragControls.addEventListener( 'dragstart', function ( event ) { controls.enabled = false; } );
-    //    dragControls.addEventListener( 'dragend', function ( event ) { controls.enabled = true; } );
-
-
-    //    scene.add(myBall)
-    //    PIEaddElement(myBack);
-    //    loader = new THREE.TextureLoader();
-    //    texture = loader.load( 'hardwood2_diffuse.jpg' );
-    //    texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-    //    texture.repeat.set( 25, 25 );
-    //    texture.anisotropy = 16;
-    //    bottomB=-4
-    //    material = new THREE.MeshPhongMaterial( { color: 0xffffff, specular: 0x111111, map: texture } );
-    //    geometry = new THREE.PlaneBufferGeometry( mySceneW * 2, backB * 2 );
-    //    geometry = new THREE.BoxGeometry( mySceneW * 2, wallThickness, 100);
-    //    material = new THREE.MeshLambertMaterial( {color: 0xaaaaaa} );
-    //    myFloor  = new THREE.Mesh( geometry, material );
-    //    // myFloor.lookAt(new THREE.Vector3(0,1,0));
-    //    myFloor.position.set(myCenterX, bottomB - (wallThickness / 2), 0.0);
-    //    myFloor.receiveShadow = true;
-    //    scene.add(myFloor);
-
-    //    var textureFlare0 = THREE.ImageUtils.loadTexture("lensflare.png");
-    //    var textureFlare3 = THREE.ImageUtils.loadTexture("lensflare3.png");
-    //
-    //    var flareColor = new THREE.Color(0xffffff);
-    //    var lensFlare = new THREE.LensFlare( {size:50, distance:0.0, blending:THREE.AdditiveBlending, color:flareColor});
-    //lensFlare.add(textureFlare3, 60, 0.6, THREE.AdditiveBlending);
-    //    lensFlare.add(textureFlare3, 70, 0.7, THREE.AdditiveBlending);
-    //    lensFlare.add(textureFlare3, 120, 0.9, THREE.AdditiveBlending);
-    //    lensFlare.add(textureFlare3, 70, 1.0, THREE.AdditiveBlending);
-
-    //    lensFlare.position.copy(light.position);
-    //    scene.add(lensFlare);
-
-
-    //
-    //
-    //    var textureFlare0 = THREE.ImageUtils.loadTexture( "lensflare.png" );
-    //    var textureFlare2 = THREE.ImageUtils.loadTexture( "lensflare2.png" );
-    //    var textureFlare3 = THREE.ImageUtils.loadTexture( "lensflare3.png" );
-    //    addLight( 0.55, 0.9, 0.5, 0, 0, 1000 );
-    //    function addLight( h, s, l, x, y, z ) {
-    //        var light = new THREE.PointLight( 0xffffff, 1.5, 2000 );
-    //        light.color.setHSL( h, s, l );
-    //        light.position.set( x, y, z );
-    //        scene.add( light );
-    //        var flareColor = new THREE.Color( 0xffffff );
-    //        flareColor.setHSL( h, s, l + 0.5 );
-    //        var lensFlare = new THREE.LensFlare( textureFlare0, 700, 0.0, THREE.AdditiveBlending, flareColor );
-    //        lensFlare.add( textureFlare2, 512, 0.0, THREE.AdditiveBlending );
-    ////        lensFlare.add( textureFlare2, 512, 0.0, THREE.AdditiveBlending );
-    ////        lensFlare.add( textureFlare2, 512, 0.0, THREE.AdditiveBlending );
-    ////        lensFlare.add( textureFlare3, 60, 0.6, THREE.AdditiveBlending );
-    ////        lensFlare.add( textureFlare3, 70, 0.7, THREE.AdditiveBlending );
-    //        lensFlare.add( textureFlare3, 120, 0.9, THREE.AdditiveBlending );
-    //        lensFlare.add( textureFlare3, 70, 1.0, THREE.AdditiveBlending );
-    //        lensFlare.customUpdateCallback = lensFlareUpdateCallback;
-    //        lensFlare.position.copy( light.position );
-    //        scene.add( lensFlare );
-    //    }
-
-    //    function lensFlareUpdateCallback( object ) {
-    //        var f, fl = object.lensFlares.length;
-    //        var flare;
-    //        var vecX = -object.positionScreen.x * 2;
-    //        var vecY = -object.positionScreen.y * 2;
-    //        for( f = 0; f < fl; f++ ) {
-    //            flare = object.lensFlares[ f ];
-    //            flare.x = object.positionScreen.x + vecX * flare.distance;
-    //            flare.y = object.positionScreen.y + vecY * flare.distance;
-    //            flare.rotation = 0;
-    //        }
-    //        object.lensFlares[ 2 ].y += 0.025;
-    //        object.lensFlares[ 3 ].rotation = object.positionScreen.x * 0.5 + THREE.Math.degToRad( 45 );
-    //    }
     var render = function () {
         requestAnimationFrame(render);
-//
-//        cube.rotation.x += 0.05;
-//        cube.rotation.y += 0.05;
-//        cube.rotation.z += 0.05;
 
         renderer.render(scene, camera);
     };
