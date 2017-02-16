@@ -261,6 +261,11 @@
     scene.add(light);
     scene.add(ambient_light);
     scene.add(screen);
+    var dragControls = new THREE.DragControls([ball,cube], camera, renderer.domElement );
+    dragControls.addEventListener( 'dragstart', function ( event ) { controls.enabled = false; } );
+    dragControls.addEventListener( 'dragend', function ( event ) { controls.enabled = true; } );
+
+
     var render = function () {
         requestAnimationFrame(render);
 
